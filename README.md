@@ -28,7 +28,7 @@ To run with docker:
 
 ```
 mvn clean package -Pdefault,f8-build docker:build
-docker run -it --rm -p 8080:8080 -e AB_OFF=true fabric8/ticket-monster-search:1.0-SNAPSHOT
+docker run -it --rm -p 8080:8080 -e AB_OFF=true fabric8/ticket-monster-search:2.0-SNAPSHOT
 ```
 
 Can port forward to your local machine from vagrant like this:

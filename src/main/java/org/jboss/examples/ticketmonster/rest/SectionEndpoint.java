@@ -34,27 +34,7 @@ public class SectionEndpoint
    @PersistenceContext(unitName = "primary")
    private EntityManager em;
 
-   @POST
-   @Consumes("application/json")
-   public Response create(SectionDTO dto)
-   {
-      Section entity = dto.fromDTO(null, em);
-      em.persist(entity);
-      return Response.created(UriBuilder.fromResource(SectionEndpoint.class).path(String.valueOf(entity.getId())).build()).build();
-   }
 
-   @DELETE
-   @Path("/{id:[0-9][0-9]*}")
-   public Response deleteById(@PathParam("id") Long id)
-   {
-      Section entity = em.find(Section.class, id);
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
-      em.remove(entity);
-      return Response.noContent().build();
-   }
 
    @GET
    @Path("/{id:[0-9][0-9]*}")
@@ -103,31 +83,5 @@ public class SectionEndpoint
       return results;
    }
 
-   @PUT
-   @Path("/{id:[0-9][0-9]*}")
-   @Consumes("application/json")
-   public Response update(@PathParam("id") Long id, SectionDTO dto)
-   {
-      TypedQuery<Section> findByIdQuery = em.createQuery("SELECT DISTINCT s FROM Section s LEFT JOIN FETCH s.venue WHERE s.id = :entityId ORDER BY s.id", Section.class);
-      findByIdQuery.setParameter("entityId", id);
-      Section entity;
-      try
-      {
-         entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
-         entity = null;
-      }
-      entity = dto.fromDTO(entity, em);
-      try
-      {
-         entity = em.merge(entity);
-      }
-      catch (OptimisticLockException e)
-      {
-         return Response.status(Response.Status.CONFLICT).entity(e.getEntity()).build();
-      }
-      return Response.noContent().build();
-   }
+
 }

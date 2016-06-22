@@ -34,27 +34,6 @@ public class TicketCategoryEndpoint
    @PersistenceContext(unitName = "primary")
    private EntityManager em;
 
-   @POST
-   @Consumes("application/json")
-   public Response create(TicketCategoryDTO dto)
-   {
-      TicketCategory entity = dto.fromDTO(null, em);
-      em.persist(entity);
-      return Response.created(UriBuilder.fromResource(TicketCategoryEndpoint.class).path(String.valueOf(entity.getId())).build()).build();
-   }
-
-   @DELETE
-   @Path("/{id:[0-9][0-9]*}")
-   public Response deleteById(@PathParam("id") Long id)
-   {
-      TicketCategory entity = em.find(TicketCategory.class, id);
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
-      em.remove(entity);
-      return Response.noContent().build();
-   }
 
    @GET
    @Path("/{id:[0-9][0-9]*}")
@@ -101,33 +80,5 @@ public class TicketCategoryEndpoint
          results.add(dto);
       }
       return results;
-   }
-
-   @PUT
-   @Path("/{id:[0-9][0-9]*}")
-   @Consumes("application/json")
-   public Response update(@PathParam("id") Long id, TicketCategoryDTO dto)
-   {
-      TypedQuery<TicketCategory> findByIdQuery = em.createQuery("SELECT DISTINCT t FROM TicketCategory t WHERE t.id = :entityId ORDER BY t.id", TicketCategory.class);
-      findByIdQuery.setParameter("entityId", id);
-      TicketCategory entity;
-      try
-      {
-         entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
-         entity = null;
-      }
-      entity = dto.fromDTO(entity, em);
-      try
-      {
-         entity = em.merge(entity);
-      }
-      catch (OptimisticLockException e)
-      {
-         return Response.status(Response.Status.CONFLICT).entity(e.getEntity()).build();
-      }
-      return Response.noContent().build();
    }
 }

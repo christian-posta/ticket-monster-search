@@ -34,27 +34,6 @@ public class EventCategoryEndpoint
    @PersistenceContext(unitName = "primary")
    private EntityManager em;
 
-   @POST
-   @Consumes("application/json")
-   public Response create(EventCategoryDTO dto)
-   {
-      EventCategory entity = dto.fromDTO(null, em);
-      em.persist(entity);
-      return Response.created(UriBuilder.fromResource(EventCategoryEndpoint.class).path(String.valueOf(entity.getId())).build()).build();
-   }
-
-   @DELETE
-   @Path("/{id:[0-9][0-9]*}")
-   public Response deleteById(@PathParam("id") Long id)
-   {
-      EventCategory entity = em.find(EventCategory.class, id);
-      if (entity == null)
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
-      em.remove(entity);
-      return Response.noContent().build();
-   }
 
    @GET
    @Path("/{id:[0-9][0-9]*}")
@@ -103,31 +82,5 @@ public class EventCategoryEndpoint
       return results;
    }
 
-   @PUT
-   @Path("/{id:[0-9][0-9]*}")
-   @Consumes("application/json")
-   public Response update(@PathParam("id") Long id, EventCategoryDTO dto)
-   {
-      TypedQuery<EventCategory> findByIdQuery = em.createQuery("SELECT DISTINCT e FROM EventCategory e WHERE e.id = :entityId ORDER BY e.id", EventCategory.class);
-      findByIdQuery.setParameter("entityId", id);
-      EventCategory entity;
-      try
-      {
-         entity = findByIdQuery.getSingleResult();
-      }
-      catch (NoResultException nre)
-      {
-         entity = null;
-      }
-      entity = dto.fromDTO(entity, em);
-      try
-      {
-         entity = em.merge(entity);
-      }
-      catch (OptimisticLockException e)
-      {
-         return Response.status(Response.Status.CONFLICT).entity(e.getEntity()).build();
-      }
-      return Response.noContent().build();
-   }
+
 }
