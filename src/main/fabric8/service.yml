@@ -1,0 +1,16 @@
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "ticket-monster-search"
+spec:
+  ports:
+  - name: "http"
+    port: 80
+    protocol: "TCP"
+    targetPort: 8080
+  selector:
+    project: "ticket-monster-search"
+    provider: "fabric8"
+    group: "com.redhat.ticketmonster"
+  type: "LoadBalancer"
