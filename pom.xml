@@ -33,13 +33,11 @@
     <version.surefire.plugin>2.10</version.surefire.plugin>
     <buildhelper.plugin.version>1.7</buildhelper.plugin.version>
 
-    <wildfly.swarm.version>2016.9-SNAPSHOT</wildfly.swarm.version>
+    <wildfly.swarm.version>2016.10.0</wildfly.swarm.version>
 
-    <!--  fabric8 / docker -->
-    <fabric8.dockerUser>fabric8/</fabric8.dockerUser>
-    <docker.image>${fabric8.dockerUser}${project.artifactId}:${project.version}</docker.image>
 
-    <fabric8.maven.plugin.version>3.1.71</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>3.1.73</fabric8.maven.plugin.version>
+    <!--<fabric8.generator.name>ticketmonster/%a:%l</fabric8.generator.name>-->
   </properties>
 
   <dependencyManagement>
@@ -247,9 +245,24 @@
           <execution>
             <goals>
               <goal>resource</goal>
+              <goal>build</goal>
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <generator>
+            <includes>
+              <include>wildfly-swarm</include>
+            </includes>
+          </generator>
+          <enricher>
+            <config>
+              <fmp-service>
+                <name>tm-search</name>
+              </fmp-service>
+            </config>
+          </enricher>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
